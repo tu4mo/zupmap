@@ -13,7 +13,17 @@ mongoose.connect(process.env.MONGODB_URI)
 
 const Message = require('./models/Message')
 
-app.post((req, res) => {
+app.get('/api/messages', (req, res) => {
+  Message.where('coordinates').near({
+    center: [req.query.long, req.query.lat],
+    maxDistance: 1,
+    spherical: true
+  })
+  .then(response => res.send(response))
+  .catch(err => res.send(err.message))
+})
+
+app.post('/api/messages', (req, res) => {
   const newMessage = new Message({
     message: req.body.message,
     coordinates: [req.body.longitude, req.body.latitude]
