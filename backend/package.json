@@ -1,6 +1,8 @@
 {
   "name": "zupmap",
   "version": "1.0.0",
+  "author": "tu4mo",
+  "private": true,
   "scripts": {
     "dev": "nodemon server.js",
     "start": "node server.js"
