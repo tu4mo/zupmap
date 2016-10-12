@@ -23,8 +23,8 @@ app.get('/api/messages', (req, res) => {
   .then(results => {
     const messages = results.map(message => ({
       message: message.message,
-      long: message.coordinates[0],
-      lat: message.coordinates[1]
+      longitude: message.coordinates[0],
+      latitude: message.coordinates[1]
     }))
     res.send(messages)
   })
