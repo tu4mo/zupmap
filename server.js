@@ -20,7 +20,14 @@ app.get('/api/messages', (req, res) => {
     maxDistance: 1,
     spherical: true
   })
-  .then(response => res.send(response))
+  .then(results => {
+    const messages = results.map(message => ({
+      message: message.message,
+      long: message.coordinates[0],
+      lat: message.coordinates[1]
+    }))
+    res.send(messages)
+  })
   .catch(err => res.send(err.message))
 })
 
