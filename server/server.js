@@ -2,7 +2,6 @@ require('dotenv').config({ silent: true })
 
 const bodyParser = require('body-parser')
 const express = require('express')
-const mongoose = require('mongoose')
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -10,42 +9,7 @@ const port = process.env.PORT || 3000
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-mongoose.Promise = global.Promise
-mongoose.connect(process.env.MONGODB_URI)
-
-const Message = require('./models/Message')
-
-app.get('/api/messages', (req, res) => {
-  Message.where('coordinates').near({
-    center: [req.query.long, req.query.lat],
-    maxDistance: 1,
-    spherical: true
-  })
-  .then(results => {
-    const messages = results.map(message => ({
-      message: message.message,
-      longitude: message.coordinates[0],
-      latitude: message.coordinates[1]
-    }))
-    res.send(messages)
-  })
-  .catch(err => res.send(err.message))
-})
-
-app.post('/api/messages', (req, res) => {
-  const newMessage = new Message({
-    message: req.body.message,
-    coordinates: [req.body.longitude, req.body.latitude]
-  })
-
-  newMessage.save()
-  .then(message => {
-    res.send(message)
-  })
-  .catch(err => {
-    res.status(500).send(err.message)
-  })
-})
+app.use(require('./routes'))
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}`)
